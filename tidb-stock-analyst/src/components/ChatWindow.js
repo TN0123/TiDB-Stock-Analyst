@@ -3,10 +3,26 @@ import "./ChatWindow.css";
 
 function ChatWindow() {
   const [message, setMessage] = useState("");
+  const [response, setResponse] = useState("");
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    console.log(message);
+    try {
+      const res = await fetch("http://localhost:5000/run-script", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ message }),
+      });
+
+      const data = await res.json();
+      setResponse(data.stdout || "No response from server");
+      console.log(response);
+    } catch (error) {
+      console.error("Error sending message:", error);
+      setResponse("Error sending message");
+    }
   };
 
   return (
