@@ -2,6 +2,11 @@ const puppeteer = require("puppeteer");
 
 const url = "https://finance.yahoo.com/topic/stock-market-news/";
 
+/*
+  Modifications are needed to this function to get the format of the
+  JSON returned to be similar to the one of "documents" in processData.py
+*/
+
 const scrapedata = async () => {
   const browser = await puppeteer.launch();
   const page = await browser.newPage();

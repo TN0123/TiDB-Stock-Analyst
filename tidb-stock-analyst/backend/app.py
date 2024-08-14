@@ -2,10 +2,6 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 import subprocess
 import json
-import logging
-
-logging.basicConfig(level=logging.DEBUG)
-
 
 app = Flask(__name__)
 CORS(app)  # Enable CORS
@@ -29,7 +25,13 @@ def run_script():
 def scrape_data():
     result = subprocess.run(['node', '../scripts/scrape.js'], capture_output=True, text=True)
     articles = json.loads(result.stdout)
-    logging.debug("Parsed JSON data: %s", articles)
+
+    #passing JSON to be processed by processData.py
+    processingCode = subprocess.run(['python3', '../scripts/processData.py', articles], capture_output=True, text=True)
+    # processingCode is an int that represents what happened during processData
+    
+    # this still returns the articles used back to the frontend, maybe we can create a component that displays the articles
+    # that were used in generating the report with links to them
     return jsonify(articles)
 
 if __name__ == '__main__':
