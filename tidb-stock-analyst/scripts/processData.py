@@ -2,18 +2,24 @@ from sentence_transformers import SentenceTransformer
 import os
 from tidb_vector.integrations import TiDBVectorClient
 from dotenv import load_dotenv
+import sys
+import json
+
 
 # downloads and embeds the model
 embed_model = SentenceTransformer("sentence-transformers/msmarco-MiniLM-L12-cos-v5", trust_remote_code=True)
 embed_model_dims = embed_model.get_sentence_embedding_dimension()
+
 
 def text_to_embedding(text):
     # Generates embeddings for the text given
     embedding = embed_model.encode(text)
     return embedding.tolist()
 
+
 # Load the connection string from the .env file
 load_dotenv()
+
 
 vector_store = TiDBVectorClient(
    # The table which will store the vector data.
@@ -26,38 +32,40 @@ vector_store = TiDBVectorClient(
    drop_existing_table=True,
 )
 
-# documents represents example JSON format that our output from scrape.js should be similar to
-# in our version, documents will be stored in sys.argv[1] when we call this script passing in JSON as the second argument
-# this json has embedding as a key, ours will not have that, we are generating that in this file (see below)
-
-documents = [
-    {
-        "id": "f8e7dee2-63b6-42f1-8b60-2d46710c1971",
-        "text": "dog",
-        "embedding": text_to_embedding("dog"),
-        "metadata": {"category": "animal"},
-    },
-    {
-        "id": "8dde1fbc-2522-4ca2-aedf-5dcb2966d1c6",
-        "text": "fish",
-        "embedding": text_to_embedding("fish"),
-        "metadata": {"category": "animal"},
-    },
-    {
-        "id": "e4991349-d00b-485c-a481-f61695f2b5ae",
-        "text": "tree",
-        "embedding": text_to_embedding("tree"),
-        "metadata": {"category": "plant"},
-    },
-]
 
 
 
-# ids and metadatas we can change to our own things, they were just given with the example
-# things we could store: date and time, link to article
-vector_store.insert(
-    ids=[doc["id"] for doc in documents],
-    texts=[doc["text"] for doc in documents],
-    embeddings=[text_to_embedding(doc["text"]) for doc in documents],
-    metadatas=[doc["metadata"] for doc in documents],
-)
+# example of documents
+
+
+
+def main():
+
+    documents = json.loads(sys.argv[1])
+
+    # documents = [
+    #     {
+    #         "title": "If You'd Invested $1,000 in Unity Software Stock 3 Years Ago, Here's How Much You'd Have Today",
+    #         "link": "https://finance.yahoo.com/news/youd-invested-1-000-unity-150200492.html",
+    #         "timestamp": 1724080714638
+    #     },
+    #     {
+    #         "title": "Why Nikola Stock Crashed 10% This Morning",
+    #         "link": "https://finance.yahoo.com/news/why-nikola-stock-crashed-10-150200763.html",
+    #         "timestamp": 1724080714639
+    #     },
+    #     {
+    #         "title": "Stocks ‘Climb Wall of Worry’ Before Jackson Hole: Markets Wrap",
+    #         "link": "https://finance.yahoo.com/news/asia-set-cautious-start-jackson-232250696.html",
+    #         "timestamp": 1724080714639
+    #     }
+    #     ]
+
+    vector_store.insert(
+        texts=[doc["title"] for doc in documents],
+        embeddings=[text_to_embedding(doc["title"]) for doc in documents],
+        metadatas=[{"link": doc["link"]} for doc in documents],
+    )
+
+
+main()

@@ -19,7 +19,8 @@ const scrapedata = async () => {
       .slice(0, 10)
       .map((article) => {
         const title = article.querySelector("a").innerText;
-        return { title };
+        const link = article.querySelector("a").href;
+        return { title, link };
       });
   });
   console.log(JSON.stringify(allArticles));
