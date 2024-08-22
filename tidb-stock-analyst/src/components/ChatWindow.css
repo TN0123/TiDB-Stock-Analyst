@@ -22,3 +22,17 @@
     resize: none;
     border-radius: 0.5rem;
 }
+
+.chat-results {
+    text-align: center;
+}
+
+.chat-results a {
+    text-decoration: none;
+    color: white;
+    font-size: 30px;
+}
+
+.chat-results a:hover {
+    color: gray;
+}
