@@ -1,6 +1,12 @@
 html, body {
-    background-color: #6107a2;
-    font-family: 'Roboto', sans-serif;
+    font-family:Arial, Helvetica, sans-serif;
     margin: 0;
     padding: 0;
+    background: hsla(246, 100%, 65%, 1);
+    background: linear-gradient(90deg, hsla(246, 100%, 65%, 1) 2%, hsla(253, 100%, 17%, 1) 100%);
+    background: -moz-linear-gradient(90deg, hsla(246, 100%, 65%, 1) 2%, hsla(253, 100%, 17%, 1) 100%);
+    background: -webkit-linear-gradient(90deg, hsla(246, 100%, 65%, 1) 2%, hsla(253, 100%, 17%, 1) 100%);
+    filter: progid: DXImageTransform.Microsoft.gradient( startColorstr="#604EFF", endColorstr="#130058", GradientType=1 );
+    background-repeat: no-repeat;
+    scroll-behavior: smooth;
 }

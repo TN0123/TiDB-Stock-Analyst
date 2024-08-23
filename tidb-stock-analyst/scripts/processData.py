@@ -4,6 +4,10 @@ from tidb_vector.integrations import TiDBVectorClient
 from dotenv import load_dotenv
 import sys
 import json
+import datetime
+import requests
+import sqlalchemy
+from sqlalchemy import text
 
 
 # downloads model for text embeddings
@@ -17,6 +21,8 @@ def text_to_embedding(text):
 
 # Loads the connection string from the .env file
 load_dotenv()
+
+engine = sqlalchemy.create_engine(os.environ.get('TIDB_DATABASE_URL'))
 
 vector_store = TiDBVectorClient(
    # The table which will store the vector data.
@@ -35,21 +41,46 @@ def print_result(query, result):
 
 def processResult(result):
     for r in result:
-        print(r.document + "," + r.metadata)
+        print(r.document + "," + r.metadata.get('link'))
 
-# Behavior when this script is called
-if len(sys.argv) == 3: # Puts data into DB
+def storeData():
+    currtime = str(datetime.datetime.now())
     documents = json.loads(sys.argv[2])
     vector_store.insert(
         texts=[doc["title"] for doc in documents],
         embeddings=[text_to_embedding(doc["title"]) for doc in documents],
-        metadatas=[doc["link"] for doc in documents],
+        metadatas=[{"link": doc["link"], "time": currtime} for doc in documents],
     )
-elif len(sys.argv) == 2:   # Fetches data from DB
+
+def fetchData():
+
     query = sys.argv[1]
     query_embedding = text_to_embedding(query)
+
+    def get_latest_entry_time():
+        latest_entry = vector_store.query(query_embedding, k=1)
+        if latest_entry:
+            latest_time_str = latest_entry[0].metadata.get('time')
+            latest_time = datetime.datetime.fromisoformat(latest_time_str)
+            return latest_time
+        return None
+
+    currtime = datetime.datetime.now()
+    latesttime = get_latest_entry_time()
+
+    if not latesttime or (currtime - latesttime).total_seconds() > 3600:
+        with engine.connect() as conn:
+            # print("deleting")
+            conn.execute(text("DELETE FROM `embedded_documents`"))
+        requests.get("http://localhost:5000/scrape")
+
     search_result = vector_store.query(query_embedding, k=3)
     # print(search_result)
     # print_result(query, search_result)
     (processResult(search_result))
+
+if len(sys.argv) == 3:
+    storeData()
+elif len(sys.argv) == 2:
+    fetchData()
     

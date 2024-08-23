@@ -1,9 +1,27 @@
+.chat-window-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    width: 100%;
+}
+
 .chat-window {
     display: flex;
     justify-content: center;
     align-items: center;
     flex-direction: column;
-    color: white;
+    color: black;
+    background-color: white;
+    width: 90%;
+    margin-top: 2%;
+    border-radius: 1rem;
+    height: 80vh;
+}
+
+.chat-window h1{
+    position: absolute;
+    top: 20%;
 }
 
 .chat-form {
@@ -18,7 +36,7 @@
 
 .chat-box {
     width: 500px;
-    height: 100px;
+    height: 50px;
     resize: none;
     border-radius: 0.5rem;
 }
@@ -28,11 +46,12 @@
 }
 
 .chat-results a {
-    text-decoration: none;
-    color: white;
+    color: black;
     font-size: 30px;
+    transition: 0.3s;
 }
 
 .chat-results a:hover {
-    color: gray;
+    color: blue;
+    font-size: 35px;
 }

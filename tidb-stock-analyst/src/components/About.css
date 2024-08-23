@@ -1,0 +1,26 @@
+.about-container{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    margin-top: 2%;
+}
+
+.about-content {
+    width: 90%;
+    background-color: white;
+    border-radius: 1rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.about-content h1 {
+    margin-top: 2%;
+}
+
+.about-content p {
+    width: 80%;
+    line-height: 2;
+}

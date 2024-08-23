@@ -1,4 +1,5 @@
 import React from "react";
+import "./GenResultsButton.css";
 
 const GenResultsButton = ({ setResult, setLoading, query }) => {
   const getRes = async () => {
@@ -19,7 +20,7 @@ const GenResultsButton = ({ setResult, setLoading, query }) => {
   };
 
   return (
-    <div>
+    <div className="gen-res-button">
       <button onClick={getRes}>Generate</button>
     </div>
   );

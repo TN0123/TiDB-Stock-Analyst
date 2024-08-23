@@ -1,12 +1,16 @@
 import ChatWindow from "./components/ChatWindow";
 import "./App.css";
-import ScrapeButton from "./components/ScrapeButton";
+// import ScrapeButton from "./components/ScrapeButton";
+import Navbar from "./components/Navbar";
+import About from "./components/About";
 
 function App() {
   return (
     <div className="App">
+      <Navbar />
       <ChatWindow />
-      <ScrapeButton />
+      <About />
+      {/* <ScrapeButton /> */}
     </div>
   );
 }

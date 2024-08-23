@@ -32,7 +32,10 @@ def scrape_data():
 
     output = subprocess.run(['python', '../scripts/processData.py', "scraping", articles], capture_output=True, text=True)
    
+    # debug line
     # return jsonify({'stdout' : output.stdout, 'stderr': output.stderr})
+    
+    # actual return
     return jsonify(json.loads(articles))
 
 @app.route('/genResults', methods=['GET'])
@@ -45,8 +48,10 @@ def gen_results():
 
     output_lines = output.splitlines()
 
+    # actual return
     return jsonify(output_lines)
     
+    # debug lines:
     # return jsonify({'stdout' : output.stdout, 'stderr': output.stderr})
     # return jsonify(output)
 
